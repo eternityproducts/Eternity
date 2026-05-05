@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETERNITY — Coded with Craft</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --americano: #1E1D1D;
+    --brew: #303031;
+    --mocha: #5A4D41;
+    --chai: #7E6957;
+    --roast: #867C70;
+    --cream: #C8B99A;
+    --latte: #E8DDD0;
+    --foam: #F5F0EA;
+    --ff-display: 'Playfair Display', Georgia, serif;
+    --ff-body: 'Cormorant Garamond', Georgia, serif;
+    --ff-accent: 'EB Garamond', Georgia, serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--americano);
+    color: var(--latte);
+    font-family: var(--ff-body);
+    font-size: 18px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ── INTERACTIVE ELEMENTS ── */
+  #particles {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute; width: 3px; height: 3px;
+    border-radius: 50%; background: var(--chai);
+    animation: particleDrift linear infinite; opacity: 0;
+  }
+  #custom-cursor {
+    position: fixed; width: 12px; height: 12px;
+    border-radius: 50%; background: var(--chai);
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%); transition: transform 0.1s;
+    mix-blend-mode: screen;
+  }
+  #cursor-ring {
+    position: fixed; width: 36px; height: 36px;
+    border-radius: 50%; border: 1px solid rgba(200, 185, 154, 0.5);
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%, -50%); transition: transform 0.18s ease-out;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.4rem 3rem;
+    background: rgba(30, 29, 29, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 0.5px solid rgba(134, 124, 112, 0.25);
+    animation: navSlideDown 0.8s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .nav-logo {
+    font-family: var(--ff-display);
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--cream);
+    letter-spacing: 0.04em;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--ff-accent);
+    font-size: 0.88rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--roast);
+    text-decoration: none;
+    transition: color 0.25s;
+  }
+  .nav-links a:hover { color: var(--cream); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 5rem;
+  }
+  .hero-left {
+    background: var(--americano);
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 5rem 4rem 5rem 5rem;
+    border-right: 0.5px solid rgba(134, 124, 112, 0.2);
+  }
+  .hero-eyebrow {
+    font-family: var(--ff-accent);
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--chai);
+    margin-bottom: 1.5rem;
+  }
+  .hero-title {
+    font-family: var(--ff-display);
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    font-weight: 600;
+    line-height: 1.05;
+    color: var(--foam);
+    margin-bottom: 1.5rem;
+  }
+  .hero-title em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--cream);
+    background: linear-gradient(90deg, var(--cream) 0%, var(--foam) 40%, var(--chai) 60%, var(--cream) 100%);
+    background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    animation: shimmer 4s linear infinite;
+  }
+  .hero-sub {
+    font-family: var(--ff-body);
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--roast);
+    max-width: 380px;
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+  }
+  .btn-primary {
+    display: inline-block;
+    padding: 0.85rem 2.5rem;
+    background: var(--chai);
+    color: var(--foam);
+    font-family: var(--ff-accent);
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none; cursor: pointer;
+    transition: background 0.25s, color 0.25s, transform 0.3s;
+    align-self: flex-start;
+  }
+  .btn-primary:hover { background: var(--cream); color: var(--americano); transform: translateY(-3px); }
+
+  .hero-right {
+    background: var(--brew);
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .palette-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 0; margin-bottom: 3rem;
+  }
+  .swatch {
+    height: 70px;
+    display: flex; align-items: flex-end; padding: 8px;
+    transition: transform 0.3s;
+  }
+  .swatch:hover { transform: scaleY(1.1); }
+  .swatch span {
+    font-family: var(--ff-accent);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .hero-code-snip {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: var(--roast);
+    line-height: 1.9;
+    border-left: 2px solid var(--chai);
+    padding-left: 1.2rem;
+  }
+  .hero-code-snip .kw { color: var(--cream); }
+  .hero-code-snip .str { color: #9DAA7B; }
+  .hero-code-snip .cmt { color: var(--mocha); font-style: italic; }
+
+  /* ── REVEAL ANIMATIONS ── */
+  .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+  .reveal-left { opacity: 0; transform: translateX(-40px); transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+  .reveal-right { opacity: 0; transform: translateX(40px); transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+  .visible { opacity: 1; transform: translate(0, 0); }
+
+  @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+  @keyframes navSlideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes particleDrift {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    10% { opacity: 0.4; }
+    90% { opacity: 0.2; }
+    100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--chai), transparent);
+    opacity: 0.35;
+  }
+
+  /* ── SECTION STYLES ── */
+  .section { padding: 6rem 5rem; }
+  .section-label {
+    font-family: var(--ff-accent);
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--chai);
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: var(--ff-display);
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: 400;
+    color: var(--foam);
+    line-height: 1.15;
+    margin-bottom: 2rem;
+  }
+  .section-title em { font-style: italic; color: var(--cream); }
+
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+    align-items: start;
+  }
+  .about-text p {
+    font-family: var(--ff-body);
+    font-size: 1.1rem;
+    color: var(--roast);
+    line-height: 1.9;
+    margin-bottom: 1.4rem;
+  }
+  .about-text p strong { font-weight: 600; color: var(--latte); }
+  
+  .pull-quote {
+    border-left: 2px solid var(--chai);
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+  }
+  .pull-quote blockquote {
+    font-family: var(--ff-display);
+    font-size: 1.45rem;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--cream);
+    line-height: 1.5;
+  }
+  .pull-quote cite {
+    display: block; margin-top: 0.75rem;
+    font-family: var(--ff-accent); font-size: 0.8rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--chai); font-style: normal;
+  }
+
+  /* ── PILLARS ── */
+  .pillars-section { background: var(--brew); padding: 6rem 5rem; }
+  .pillars-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 3rem; }
+  .pillar {
+    background: var(--americano);
+    padding: 2.5rem; transition: all 0.3s;
+    border-top: 2px solid transparent;
+  }
+  .pillar:hover { border-color: var(--chai); transform: translateY(-10px); }
+  .pillar-num {
+    font-family: var(--ff-display); font-size: 3rem;
+    font-style: italic; color: var(--mocha);
+    line-height: 1; margin-bottom: 1.2rem;
+  }
+  .pillar-title {
+    font-family: var(--ff-display); font-size: 1.3rem;
+    font-style: italic; color: var(--foam); margin-bottom: 1rem;
+  }
+  .pillar p { font-family: var(--ff-body); font-size: 1rem; color: var(--roast); line-height: 1.8; }
+
+  /* ── PHILOSOPHY ── */
+  .philosophy {
+    background: var(--mocha); padding: 6rem 5rem;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 5rem; align-items: center;
+  }
+  .philosophy-text p {
+    font-family: var(--ff-body); font-size: 1.1rem;
+    color: rgba(245, 240, 234, 0.75); line-height: 1.9; margin-bottom: 1.2rem;
+  }
+  .code-card { background: var(--americano); padding: 2rem 2.5rem; position: relative; }
+  .code-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; background: linear-gradient(to right, var(--chai), var(--roast));
+  }
+  .code-card pre { font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--roast); line-height: 2; white-space: pre-wrap; }
+  .code-card .k { color: var(--cream); }
+  .code-card .s { color: #9DAA7B; }
+  .code-card .c { color: var(--mocha); font-style: italic; }
+  .code-card .fn { color: #A89070; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #141313; padding: 3rem 5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 0.5px solid rgba(90, 77, 65, 0.3);
+  }
+  .footer-logo { font-family: var(--ff-display); font-style: italic; font-size: 1.2rem; color: var(--chai); }
+  footer p { font-family: var(--ff-accent); font-size: 0.78rem; color: var(--mocha); text-transform: uppercase; }
+
+  @media (max-width: 768px) {
+    .hero, .about-grid, .pillars-grid, .philosophy { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .section, .pillars-section { padding: 4rem 2rem; }
+    body { cursor: auto; }
+    #custom-cursor, #cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="particles"></div>
+<div id="custom-cursor"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <div class="nav-logo">ETERNITY</div>
+  <ul class="nav-links">
+    <li><a href="#craft">Craft</a></li>
+    <li><a href="#pillars">Pillars</a></li>
+    <li><a href="#philosophy">Philosophy</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">Web Design &amp; Development</p>
+    <h1 class="hero-title">Crafted with<br><em>Code &amp; Care</em></h1>
+    <p class="hero-sub">Where the warmth of dark roast meets the precision of clean architecture — every line written with intention.</p>
+    <a href="#craft" class="btn-primary">Explore the Work</a>
+  </div>
+  <div class="hero-right">
+    <div class="palette-grid">
+      <div class="swatch" style="background:#1E1D1D;"><span style="color:#5A4D41">Americano</span></div>
+      <div class="swatch" style="background:#5A4D41;"><span style="color:#C8B99A">Mocha</span></div>
+      <div class="swatch" style="background:#7E6957;"><span style="color:#F5F0EA">Chai</span></div>
+      <div class="swatch" style="background:#303031;"><span style="color:#7E6957">Brew</span></div>
+      <div class="swatch" style="background:#867C70;"><span style="color:#1E1D1D">Roast</span></div>
+      <div class="swatch" style="background:#C8B99A;"><span style="color:#5A4D41">Cream</span></div>
+    </div>
+    <div class="hero-code-snip">
+      <div><span class="kw">const</span> palette = {</div>
+      <div>&nbsp;&nbsp;americano: <span class="str">'#1E1D1D'</span>,</div>
+      <div>&nbsp;&nbsp;mocha: <span class="str">'#5A4D41'</span>,</div>
+      <div>&nbsp;&nbsp;chai: <span class="str">'#7E6957'</span>,</div>
+      <div><span class="cmt">  /* warmth in every hex */</span></div>
+      <div>}</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="craft">
+  <p class="section-label reveal">On the Craft</p>
+  <div class="about-grid">
+    <div class="reveal-left">
+      <h2 class="section-title">Writing Code<br>as <em>Literature</em></h2>
+      <div class="pull-quote">
+        <blockquote>To write code is to author a living manuscript — each function a sentence, each module a chapter, each system a world entire.</blockquote>
+        <cite>— ETERNITY Studio</cite>
+      </div>
+    </div>
+    <div class="about-text reveal-right">
+      <p>Coding is not merely the act of instructing machines. It is the <strong>ancient discipline of logic rendered visible</strong>, the bridge between an idea held in the mind and a form that persists in the world. A well-written function possesses the economy of verse — nothing superfluous, nothing omitted.</p>
+      <p>The finest code carries a <strong>particular quality of silence</strong>: it does precisely what is expected, no more and no less, and leaves its reader with a sense of quiet inevitability.</p>
+      <p>We compose in HTML, CSS, and JavaScript as one might compose in prose — with <strong>attention to rhythm, structure, and the weight of each chosen word</strong>.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="pillars-section" id="pillars">
+  <p class="section-label reveal">The Three Pillars</p>
+  <h2 class="section-title reveal" style="color:var(--foam)">Where <em>Design Meets</em><br>Engineering</h2>
+  <div class="pillars-grid">
+    <div class="pillar reveal">
+      <div class="pillar-num">I</div>
+      <div class="pillar-title">Semantic Structure</div>
+      <p>The skeleton beneath every beautiful surface. We write HTML that speaks clearly to browsers, assistive technologies, and future developers alike.</p>
+    </div>
+    <div class="pillar reveal" style="transition-delay: 0.1s">
+      <div class="pillar-num">II</div>
+      <div class="pillar-title">Visual Eloquence</div>
+      <p>CSS as a medium for atmosphere. Colour chosen with the deliberateness of a painter selecting from a limited palette.</p>
+    </div>
+    <div class="pillar reveal" style="transition-delay: 0.2s">
+      <div class="pillar-num">III</div>
+      <div class="pillar-title">Living Behaviour</div>
+      <p>JavaScript as choreography. Interactions should feel earned, never gratuitous — transitions that guide the eye.</p>
+    </div>
+  </div>
+</section>
+
+<section class="philosophy reveal" id="philosophy">
+  <div class="philosophy-text">
+    <p class="section-label" style="color:var(--cream)">Philosophy</p>
+    <h2 class="section-title">Code Written<br>in <em>Dark Ink</em></h2>
+    <p>Every project begins not with a wireframe but with a question: what is the essential nature of this thing?</p>
+    <p>The palette drawn from coffee — Americano, Mocha, Chai, Roast, Brew — is not incidental. These are colours that speak of warmth, of depth.</p>
+    <p>We build sites as one builds furniture: to last, to be used, to improve with time.</p>
+  </div>
+  <div class="code-card">
+    <pre><span class="c">/* The palette, rendered in code */</span>
+<span class="k">:root</span> {
+  --americano: <span class="s">#1E1D1D</span>;
+  --brew:      <span class="s">#303031</span>;
+  --mocha:     <span class="s">#5A4D41</span>;
+}
+<span class="fn">body</span> {
+  <span class="k">background</span>: <span class="fn">var</span>(<span class="s">--americano</span>);
+  <span class="k">color</span>: <span class="fn">var</span>(<span class="s">--roast</span>);
+}</pre>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="footer-logo">ETERNITY</div>
+  <p>Crafted with intention &mdash; 2026</p>
+  <p>aryannverma442@gmail.com</p>
+</footer>
+
+<script>
+  // 1. SCROLL REVEAL LOGIC
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+  // 2. CUSTOM CURSOR LOGIC
+  const cursor = document.getElementById('custom-cursor');
+  const ring = document.getElementById('cursor-ring');
+  document.addEventListener('mousemove', (e) => {
+    cursor.style.left = ring.style.left = e.clientX + 'px';
+    cursor.style.top = ring.style.top = e.clientY + 'px';
+  });
+
+  // 3. BACKGROUND PARTICLES
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 15; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.top = Math.random() * 100 + 'vh';
+    p.style.animationDuration = (Math.random() * 10 + 10) + 's';
+    p.style.animationDelay = Math.random() * 5 + 's';
+    container.appendChild(p);
+  }
+</script>
+
+</body>
+</html>
